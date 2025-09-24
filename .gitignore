@@ -1,0 +1,35 @@
+# Unity
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+Builds/
+UserSettings/
+MemoryCaptures/
+[Dd]ebug/
+*.csproj.user
+*.pidb
+*.suo
+*.userprefs
+*.unitypackage
+
+# Visual Studio / .NET
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+
+# Logs
+*.log
+
+# Git LFS attributes file
+.gitattributes
