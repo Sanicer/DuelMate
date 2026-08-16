@@ -61,6 +61,9 @@ public class GameManager
             throw new InvalidOperationException("The game has already ended.");
         }
 
+        int player1HealthBefore = Player1.Health;
+        int player2HealthBefore = Player2.Health;
+
         Card p1Card = TakeCardFromHand(Player1, player1CardIndex);
         Card p2Card = TakeCardFromHand(Player2, player2CardIndex);
 
@@ -76,20 +79,20 @@ public class GameManager
         Player1.DiscardPile.Add(p1Card);
         Player2.DiscardPile.Add(p2Card);
 
+        if (!Player1.IsAlive && !Player2.IsAlive)
+        {
+            // Draws should not happened
+            throw new InvalidOperationException(
+                $"Invalid game state: both players reached 0 health in the same round. " +
+                $"Player1 played {p1Card.Type} (health {player1HealthBefore} -> {Player1.Health}, buffs {Player1.BuffCount}). " +
+                $"Player2 played {p2Card.Type} (health {player2HealthBefore} -> {Player2.Health}, buffs {Player2.BuffCount}).");
+        }
+
         if (!Player1.IsAlive || !Player2.IsAlive)
         {
             IsGameOver = true;
             result.GameOver = true;
-
-            if (!Player1.IsAlive && !Player2.IsAlive)
-            {
-                Winner = null; // simultaneous KO: a draw
-            }
-            else
-            {
-                Winner = Player1.IsAlive ? Player1 : Player2;
-            }
-
+            Winner = Player1.IsAlive ? Player1 : Player2;
             result.Winner = Winner;
         }
 
