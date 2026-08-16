@@ -1,4 +1,4 @@
-﻿using DualMate.Core.Enums;
+﻿using DuelMate.Core.Enums;
 using DuelMate.Core.Models;
 using System;
 using System.Diagnostics;

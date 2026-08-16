@@ -1,4 +1,4 @@
-﻿namespace DualMate.Core.Enums
+﻿namespace DuelMate.Core.Enums
 {
     public enum CardType
     {
