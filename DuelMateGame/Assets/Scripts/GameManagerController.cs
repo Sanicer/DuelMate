@@ -1,4 +1,5 @@
-﻿using DuelMate.Core.Services;
+﻿using DuelMate.Core.Models;
+using DuelMate.Core.Services;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -84,29 +85,39 @@ public class GameManagerController : MonoBehaviour
         // NEW: start of a new round → clear last round’s opponent text(s)
         ResetOpponentRoundVisuals();
 
-        // Play selected card for Player1
-        var playedCard = game.PlayCard(game.Player1, index);
-
-        // AI chooses and plays a card
+        // AI picks its card first so both cards can be resolved together.
         int aiCardIndex = ai.ChooseCardIndex(game.Player2);
-        if (aiCardIndex != -1)
+        if (aiCardIndex == -1)
         {
-            var aiCard = game.PlayCard(game.Player2, aiCardIndex);
-            Debug.Log($"Opponent played {aiCard.Type}");
-
-            // Start the flip animation
-            StartCoroutine(FlipOpponentCard(aiCardIndex, aiCard.Type.ToString()));
+            Debug.LogWarning("AI had no card to play; skipping round.");
+            selectedCardIndex = -1;
+            return;
         }
+
+        // Resolve the round: both cards are committed and compared at once.
+        RoundResult result = game.PlayRound(index, aiCardIndex);
+        Debug.Log($"You played {result.Player1Card.Type}, opponent played {result.Player2Card.Type} " +
+                   $"(you took {result.Player1DamageTaken} dmg, opponent took {result.Player2DamageTaken} dmg)");
+
+        // Start the flip animation revealing the opponent's card.
+        StartCoroutine(FlipOpponentCard(aiCardIndex, result.Player2Card.Type.ToString()));
 
         // Update UI
         UpdateHPDisplay();
-        game.DrawCards(game.Player1);
-        game.DrawCards(game.Player2); // AI gets next hand too
-        UpdateUIWithNewHand();
-
-        // TODO: Opponent card display in future
 
         selectedCardIndex = -1;
+
+        if (result.GameOver)
+        {
+            string outcome = result.Winner == game.Player1 ? "You win!" : "Opponent wins!";
+            Debug.Log($"Game over: {outcome}");
+            // TODO: show a proper end-of-game screen instead of just logging.
+            return;
+        }
+
+        game.DrawHand(game.Player1);
+        game.DrawHand(game.Player2); // AI gets next hand too
+        UpdateUIWithNewHand();
     }
 
     private void UpdateUIWithNewHand()
