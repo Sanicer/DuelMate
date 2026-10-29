@@ -155,15 +155,19 @@ public class GameManager
         else if (t1 == CardType.Parry && t2 == CardType.Setup)
         {
             p2.BuffCount += 2;
+            result.Player2BuffChange = 2;
         }
         else if (t1 == CardType.Setup && t2 == CardType.Parry)
         {
             p1.BuffCount += 2;
+            result.Player1BuffChange = 2;
         }
         else if (t1 == CardType.Setup && t2 == CardType.Setup)
         {
             p1.BuffCount += 1;
             p2.BuffCount += 1;
+            result.Player1BuffChange = 1;
+            result.Player2BuffChange = 1;
         }
     }
 
@@ -174,6 +178,14 @@ public class GameManager
         if (attacker.BuffCount > 0)
         {
             attacker.BuffCount -= 1;
+            if (attackerIsPlayer1)
+            {
+                result.Player1BuffChange = -1;
+            }
+            else
+            {
+                result.Player2BuffChange = -1;
+            }
         }
         else
         {

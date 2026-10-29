@@ -8,5 +8,7 @@
         public int Player2DamageTaken { get; set; }
         public bool GameOver { get; set; }
         public Player Winner { get; set; }
+        public int Player1BuffChange { get; set; }
+        public int Player2BuffChange { get; set; }
     }
 }

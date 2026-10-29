@@ -54,6 +54,7 @@ public class GameManagerTests
 
         RoundResult result = game.PlayRound(0, 0);
 
+        Assert.Equal(-1, result.Player1BuffChange);
         Assert.Equal(1, game.Player1.BuffCount);
         Assert.Equal(0, result.Player1DamageTaken);
         Assert.Equal(3, game.Player1.Health);
@@ -66,6 +67,7 @@ public class GameManagerTests
 
         RoundResult result = game.PlayRound(0, 0);
 
+        Assert.Equal(0, result.Player1BuffChange);
         Assert.Equal(1, result.Player1DamageTaken);
         Assert.Equal(2, game.Player1.Health);
         Assert.Equal(3, game.Player2.Health); // parrier untouched either way
@@ -101,8 +103,9 @@ public class GameManagerTests
     {
         var game = CreateGameWithHands(CardType.Parry, CardType.Setup);
 
-        game.PlayRound(0, 0);
+        RoundResult result = game.PlayRound(0, 0);
 
+        Assert.Equal(2, result.Player2BuffChange);
         Assert.Equal(2, game.Player2.BuffCount);
         Assert.Equal(0, game.Player1.BuffCount);
     }
@@ -112,8 +115,10 @@ public class GameManagerTests
     {
         var game = CreateGameWithHands(CardType.Setup, CardType.Setup);
 
-        game.PlayRound(0, 0);
+        RoundResult result = game.PlayRound(0, 0);
 
+        Assert.Equal(1, result.Player1BuffChange);
+        Assert.Equal(1, result.Player2BuffChange);
         Assert.Equal(1, game.Player1.BuffCount);
         Assert.Equal(1, game.Player2.BuffCount);
     }
@@ -137,7 +142,7 @@ public class GameManagerTests
     {
         var game = CreateGameWithHands(CardType.Setup, CardType.Setup);
 
-        game.PlayRound(0, 0);
+        RoundResult result = game.PlayRound(0, 0);
 
         Assert.Single(game.Player1.DiscardPile);
         Assert.Equal(CardType.Setup, game.Player1.DiscardPile[0].Type);
@@ -148,7 +153,7 @@ public class GameManagerTests
     {
         var game = CreateGameWithHands(CardType.Attack, CardType.Setup);
         game.Player2.Health = 1;
-        game.PlayRound(0, 0); // ends the game
+        RoundResult result = game.PlayRound(0, 0);
 
         Assert.Throws<InvalidOperationException>(() => game.PlayRound(0, 0));
     }
