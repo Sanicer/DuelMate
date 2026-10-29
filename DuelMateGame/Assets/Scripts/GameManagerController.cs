@@ -1,6 +1,8 @@
 ﻿using DuelMate.Core.Models;
 using DuelMate.Core.Services;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,6 +31,11 @@ public class GameManagerController : MonoBehaviour
     public TextMeshProUGUI opponentCard1Text;
     public TextMeshProUGUI opponentCard2Text;
     public TextMeshProUGUI opponentCard3Text;
+
+    [Header("Discard Piles")]
+    public Transform playerDiscardContainer;
+    public Transform opponentDiscardContainer;
+    public GameObject discardCardPrefab;
 
     private GameObject[] opponentCardObjects;
     private TextMeshProUGUI[] opponentCardTexts;
@@ -196,6 +203,30 @@ public class GameManagerController : MonoBehaviour
                 if (!go) continue;
                 // make sure we aren't mid-flip from a previous animation
                 go.transform.localScale = new Vector3(1f, 1f, 1f);
+            }
+        }
+    }
+
+    private void UpdateDiscardDisplay()
+    {
+        RebuildDiscardPile(playerDiscardContainer, game.Player1.DiscardPile);
+        RebuildDiscardPile(opponentDiscardContainer, game.Player2.DiscardPile);
+    }
+
+    private void RebuildDiscardPile(Transform container, List<Card> discardPile)
+    {
+        for (int i = container.childCount - 1; i >= 0; i--)
+        {
+            Destroy(container.GetChild(i).gameObject);
+        }
+
+        foreach (Card card in discardPile)
+        {
+            GameObject cardVisual = Instantiate(discardCardPrefab, container);
+            TextMeshProUGUI cardText = cardVisual.GetComponentInChildren<TextMeshProUGUI>();
+            if (cardText != null)
+            {
+                cardText.text = card.Type.ToString();
             }
         }
     }
