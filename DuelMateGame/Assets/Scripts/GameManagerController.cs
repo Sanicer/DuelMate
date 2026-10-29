@@ -62,6 +62,7 @@ public class GameManagerController : MonoBehaviour
         game = new GameManager();
         game.StartGame();
         UpdateUIWithNewHand();
+        UpdateDiscardDisplay();
 
         ai = new SimpleAI();
     }
@@ -111,6 +112,7 @@ public class GameManagerController : MonoBehaviour
 
         // Update UI
         UpdateHPDisplay();
+        UpdateDiscardDisplay();
 
         selectedCardIndex = -1;
 
